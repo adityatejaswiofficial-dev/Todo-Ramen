@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Todo Ramen
 
-## Getting Started
+A small responsive Next.js todo application with a polished mobile-first interface and AI-powered task suggestions using Puter.js.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* Add, edit, and delete todos
+* Mark todos as completed with irreversible completion state
+* Toggle between incomplete todos and completed todos using a "Show Completed Todos" button
+* Search todos by text
+* Persistent state with localStorage
+* Responsive layout for desktop and mobile screens
+* Mobile-friendly buttons, todo cards, and textarea input
+* 🤖 AI-powered todo suggestions using Puter.js
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## AI Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Todo Ramen integrates Puter.js AI to help users stay productive.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Smart Todo Suggestions
 
-## Learn More
+The AI analyzes your existing todos and suggests relevant new tasks.
 
-To learn more about Next.js, take a look at the following resources:
+Examples:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Existing Todos**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Learn Next.js
+* Build a portfolio website
 
-## Deploy on Vercel
+**AI Suggestion**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Deploy your portfolio to Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If you have no todos yet, the AI can generate productive starter tasks to help you get organized.
+
+### Context-Aware Recommendations
+
+Instead of generating random tasks, the AI uses your current todo list as context to create suggestions that match your goals and workflow.
+
+## Technologies
+
+* Next.js 14+ App Router
+* React Client Components
+* Tailwind CSS
+* Puter.js AI
+* react-icons
+* uuid
+
+## How to Use
+
+1. Run `npm install`
+2. Run `npm run dev`
+3. Open the app in your browser
+4. Add a few todos
+5. Click the **Suggest Me** button to get an AI-generated task recommendation
+
+## Notes
+
+* Completed todos cannot be unchecked once marked done.
+* The app stores todos in browser local storage so your list persists between page refreshes.
+* The layout adapts across screen sizes, with smaller buttons and card layouts on mobile.
+* AI suggestions are generated through Puter.js and may vary based on your current todo list.
+
+## Future Improvements
+
+* Multiple AI suggestions at once
+* AI task prioritization
+* AI-generated daily plans
+* Categories and tags
+* Cloud sync and user accounts
+
+## License
+
+MIT License
