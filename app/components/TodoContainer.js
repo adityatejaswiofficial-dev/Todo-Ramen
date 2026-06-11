@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { AiFillEyeInvisible } from "react-icons/ai";
+import { TbTopologyStar3 } from "react-icons/tb";
 import { FaEye } from "react-icons/fa";
 import { v4 as uuidv4 } from 'uuid';
 import Navbar from './Navbar';
@@ -17,8 +18,8 @@ const TodoContainer = () => {
     const [showEditBtn, setShowEditBtn] = useState(false)
     const [todoDialog, setTodoDialog] = useState(false)
     const [showCompleted, setShowCompleted] = useState(false)
-    const [search, setSearch] = useState("")
     const [isThinking, setIsThinking] = useState(false)
+    const [results, setResults] = useState([])
 
     const saveToLocalStorage = (todo) => {
         localStorage.setItem("todos", JSON.stringify(todo))
@@ -96,13 +97,9 @@ const TodoContainer = () => {
     };
 
     const deleteTodo = (e, id) => {
-        const updatedTodos = todos.filter(t => t.id !== id);
+        const updatedTodos = todos.filter(t => t.id !== id)
         setTodos(updatedTodos)
         saveToLocalStorage(updatedTodos)
-    }
-
-    const handleSearch = (e) => {
-        setSearch(e.target.value)
     }
 
     const toggleShowCompleted = () => {
@@ -119,37 +116,37 @@ const TodoContainer = () => {
                 `"Suggest the user a todo if the user is new suggest the todo as you wish but if the user had added 2-3 todos already generate todos based on previous todos and you just have to give one todo and nothing else and you have to give unique todo everytime" These are the user's previous todos: ${todoList}`
             );
             setTodo(response.message.content)
-            console.log(response.message.content);
-            console.log(todo)
         } catch (error) {
-            console.error(error);
+            console.error(error)
         } finally {
             setIsThinking(false)
         }
     };
 
+    const todosToDisplay = Array.isArray(results) && results.length > 0 ? results : filteredTodos;
+
     return (
-        <main className='min-h-screen p-3'>
-            <div className="bg-[#2e2a2a] text-white rounded-2xl px-4 py-5 sm:px-10 overflow-auto scrollbar-thumb-white min-h-screen">
-                <Navbar />
+        <main className='h-screen p-3'>
+            <div className="bg-[#2e2a2a] text-white rounded-2xl px-4 py-5 sm:px-10 overflow-auto scrollbar-thumb-white min-h-full">
+                <Navbar todos={todos} setResults={setResults} />
                 <div className="add-to-do-button flex flex-row gap-3 justify-end flex-wrap">
 
                     <div className='relative group'>
                         <button onClick={toggleShowCompleted} className='bg-white text-black rounded-2xl px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm cursor-pointer hover:bg-[#ece6e6]'>
                             {showCompleted ? <AiFillEyeInvisible /> : <FaEye />}
                         </button>
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition w-40 text-center">
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition w-40 text-center">
                             {showCompleted ? <span>Hide completed todos</span> : <span>Show completed todos</span>}
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
                         </div>
                     </div>
 
                     <div className='relative group'>
                         <button onClick={openTodoDialog} className='bg-white text-black rounded-2xl px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm cursor-pointer hover:bg-[#ece6e6]'><FaPlus /></button>
 
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition w-20 text-center">
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition w-20 text-center">
                             <span>Add Todo</span>
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
                         </div>
                     </div>
 
@@ -162,10 +159,10 @@ const TodoContainer = () => {
                     ) : filteredTodos.length === 0 ? (
                         <div className='text-xl font-bold text-center py-15 text-[#655d5d]'>No Todos To Show</div>
                     ) : null}
-                    {filteredTodos.map((item) => {
+                    {todosToDisplay.map((item) => {
                         return <div key={item.id} className="todo flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 my-3 bg-[#211c1c] p-4 sm:p-5 rounded-2xl hover:shadow-2xl transition">
                             <div className="right flex items-start gap-3 flex-1 min-w-0">
-                                <input type="checkbox" checked={item.completed || false} onChange={() => toggleCompleted(item.id)} disabled={item.completed} className="mt-1" />
+                                <input type="checkbox" checked={item.completed || false} onChange={() => toggleCompleted(item.id)} disabled={item.completed} className="mt-1 cursor-pointer" />
 
                                 <p className={`wrap-break-word ${item.completed ? "line-through text-gray-400" : ""}`}>{item.todo} </p>
                             </div>
@@ -174,9 +171,9 @@ const TodoContainer = () => {
                                 <small className="text-gray-400">{item.time}</small>
 
                                 <div className="flex gap-2">
-                                    <button onClick={(e) => editTodo(e, item.id)} disabled={item.completed} className="bg-white text-black px-4 py-2 rounded-xl hover:bg-[#ece6e6] disabled:opacity-50 disabled:cursor-not-allowed"><MdEdit /></button>
+                                    <button onClick={(e) => editTodo(e, item.id)} disabled={item.completed} className="bg-white text-black px-4 py-2 rounded-xl hover:bg-[#ece6e6] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"><MdEdit /></button>
 
-                                    <button onClick={(e) => deleteTodo(e, item.id)} className="bg-white text-black px-4 py-2 rounded-xl hover:bg-[#ece6e6]"><MdDelete /></button>
+                                    <button onClick={(e) => deleteTodo(e, item.id)} className="bg-white text-black px-4 py-2 rounded-xl hover:bg-[#ece6e6] cursor-pointer"><MdDelete /></button>
                                 </div>
                             </div>
                         </div>
@@ -186,16 +183,16 @@ const TodoContainer = () => {
                 {todoDialog ? <div className="add-todo-dialog fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
                     <div className="add-to-do bg-[#1c1b1b] rounded-2xl w-full max-w-2xl flex flex-col p-4 sm:p-6 md:p-8 gap-5 shadow-2xl">
                         <div className="close-dialog flex justify-end">
-                            <button onClick={() => setTodoDialog(false)}><IoClose /></button>
+                            <button onClick={() => setTodoDialog(false)} className='cursor-pointer'><IoClose /></button>
                         </div>
 
                         <div className='relative'>
                             <textarea onChange={(e) => handleChange(e)} value={todo} className='w-full bg-[#2b2626] text-white resize-none p-4 pb-16 rounded-2xl' name="todo" id="todo" rows="8" placeholder='What to do today?'></textarea>
 
-                            {isThinking ? <button disabled={true} className='bg-white px-4 py-2 rounded-2xl text-black absolute bottom-4 right-4 animate-pulse'>Thinking...</button> : <button onClick={askAI} className='bg-white px-4 py-2 rounded-2xl text-black absolute bottom-4 right-4 hover:bg-[#ece6e6]'>Suggest Me</button>}
+                            {isThinking ? <button disabled={true} className='bg-white px-4 py-2 rounded-2xl text-black absolute bottom-4 right-4 animate-pulse'>Thinking...</button> : <button onClick={askAI} className='bg-white px-4 py-2 rounded-2xl text-black absolute bottom-4 right-4 hover:bg-[#ece6e6] cursor-pointer flex items-center gap-2'><TbTopologyStar3 />Suggest Me</button>}
                         </div>
 
-                        {showEditBtn ? <button onClick={saveEditedTodo} className='bg-white text-black w-full py-3 rounded-2xl hover:bg-[#ece6e6]'>Edit Todo</button> : <button disabled={todo.length == 0} onClick={addTodo} className='bg-white disabled:bg-[#d5cece] text-black w-full py-3 rounded-2xl hover:bg-[#ece6e6]'>Add Todo</button>}
+                        {showEditBtn ? <button onClick={saveEditedTodo} className='bg-white text-black w-full py-3 rounded-2xl hover:bg-[#ece6e6] cursor-pointer'>Edit Todo</button> : <button disabled={todo.length == 0} onClick={addTodo} className='bg-white disabled:bg-[#d5cece] text-black w-full py-3 rounded-2xl hover:bg-[#ece6e6] cursor-pointer'>Add Todo</button>}
                     </div>
                 </div> : ""}
             </div>
